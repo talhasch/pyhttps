@@ -6,6 +6,8 @@ import sys
 import tempfile
 from subprocess import call
 
+from version import version
+
 logging.basicConfig(level=logging.INFO)
 
 PY3 = sys.version_info[0] == 3
@@ -44,13 +46,14 @@ def create_ssl_cert():
 
 
 def exit_handler():
-    # remove certificate file
+    # remove certificate file at exit
     os.remove(ssl_cert_path)
 
     logging.info('Bye!')
 
 
 def main():
+    logging.info('pyhttps {}'.format(version))
     create_ssl_cert()
     atexit.register(exit_handler)
 
@@ -62,9 +65,6 @@ def main():
         logging.info('Server running... https://{}:{}'.format(server_host, server_port))
         httpd = socketserver.TCPServer((server_host, server_port), http.server.SimpleHTTPRequestHandler)
         httpd.socket = ssl.wrap_socket(httpd.socket, certfile=ssl_cert_path, server_side=True)
-        httpd.serve_forever()
-
-        httpd.shutdown()
     else:
         import BaseHTTPServer
         import SimpleHTTPServer
@@ -73,4 +73,5 @@ def main():
         logging.info('Server running... https://{}:{}'.format(server_host, server_port))
         httpd = BaseHTTPServer.HTTPServer((server_host, server_port), SimpleHTTPServer.SimpleHTTPRequestHandler)
         httpd.socket = ssl.wrap_socket(httpd.socket, certfile=ssl_cert_path, server_side=True)
-        httpd.serve_forever()
+
+    httpd.serve_forever()
