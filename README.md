@@ -4,7 +4,12 @@
 
 Simple python https server creator.
 
-## Installation
+## Installation from Pypi
+
+Run: `pip install pyhttps`
+
+
+## Installation from source
 
 - Clone repo: `git clone https://github.com/talhasch/pyhttps && cd pyhttps`
 
